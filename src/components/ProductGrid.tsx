@@ -1,5 +1,4 @@
 "use client";
-// components/ProductGrid.tsx
 import React, { useContext } from 'react';
 import { ProductsContext } from './Products';
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,7 @@ import {
 import Image from "next/image";
 
 const ProductGrid: React.FC = () => {
-  const { filteredProducts } = useContext(ProductsContext);
+  const { filteredProducts, addToCart } = useContext(ProductsContext);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -39,7 +38,9 @@ const ProductGrid: React.FC = () => {
             </p>
           </CardContent>
           <CardFooter>
-            <Button className="w-full">Ajouter au panier</Button>
+            <Button className="w-full" onClick={() => addToCart(product)}>
+              Ajouter au panier
+            </Button>
           </CardFooter>
         </Card>
       ))}

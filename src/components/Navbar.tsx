@@ -1,22 +1,24 @@
 "use client";
-// components/Navbar.tsx
 import React, { useState, useContext } from 'react';
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Search } from 'lucide-react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ProductsContext } from './Products';
+import Link from 'next/link';
 
 const Navbar: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const { products, handleSearch } = useContext(ProductsContext);
+  const { products, handleSearch, cartItems } = useContext(ProductsContext);
+
+  const cartItemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <nav className="bg-white shadow-md">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-4">
-          <div className="text-2xl font-bold">E-Commerce</div>
+          <Link href="/" className="text-2xl font-bold">E-Commerce</Link>
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-[300px] justify-start">
@@ -62,9 +64,16 @@ const Navbar: React.FC = () => {
               </Command>
             </PopoverContent>
           </Popover>
-          <Button variant="outline" size="icon">
-            <ShoppingCart className="h-5 w-5" />
-          </Button>
+          <Link href="/cart" passHref>
+            <Button variant="outline" size="icon" className="relative">
+              <ShoppingCart className="h-5 w-5" />
+              {cartItemsCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                  {cartItemsCount}
+                </span>
+              )}
+            </Button>
+          </Link>
         </div>
       </div>
     </nav>
