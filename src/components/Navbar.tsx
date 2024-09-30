@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, Search } from 'lucide-react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ProductsContext } from './Products';
+import { ProductsContext } from './contexts/Products';
 import Link from 'next/link';
 
 const Navbar: React.FC = () => {

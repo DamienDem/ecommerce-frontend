@@ -1,10 +1,10 @@
 "use client";
 import React, { useContext } from 'react';
-import { ProductsContext } from '@/components/Products';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from 'next/link';
+import { ProductsContext } from '@/components/contexts/Products';
 
 const CartPage: React.FC = () => {
   const { cartItems, removeFromCart, updateCartItemQuantity } = useContext(ProductsContext);
