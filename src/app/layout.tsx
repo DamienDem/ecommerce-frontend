@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-
-import Navbar from "@/components/Navbar";
 import { products as initialProducts } from '@/constants/product';
 import Products from "@/components/contexts/Products";
 
@@ -31,7 +29,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Products initialProducts={initialProducts}>
-          <Navbar />
           {children}
         </Products>
       </body>

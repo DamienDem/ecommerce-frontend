@@ -1,18 +1,32 @@
 "use client";
-import React, { useState, useContext } from 'react';
+
+import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Search } from 'lucide-react';
+import { ShoppingCart, Search, UserCircle } from 'lucide-react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ProductsContext } from './contexts/Products';
 import Link from 'next/link';
+import { useAuth } from '@/hooks/useAuth';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../firebase.config';
+
 
 const Navbar: React.FC = () => {
-  const [open, setOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const { products, handleSearch, cartItems } = useContext(ProductsContext);
+  const [open, setOpen] = React.useState(false);
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const { products, handleSearch, cartItems } = React.useContext(ProductsContext);
+  const { user, loading } = useAuth();
 
   const cartItemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error);
+    }
+  };
 
   return (
     <nav className="bg-white shadow-md">
@@ -28,8 +42,8 @@ const Navbar: React.FC = () => {
             </PopoverTrigger>
             <PopoverContent className="w-[300px] p-0">
               <Command>
-                <CommandInput 
-                  placeholder="Rechercher un produit..." 
+                <CommandInput
+                  placeholder="Rechercher un produit..."
                   value={searchTerm}
                   onValueChange={(value) => {
                     setSearchTerm(value);
@@ -41,7 +55,7 @@ const Navbar: React.FC = () => {
                   <CommandEmpty>Aucun résultat trouvé.</CommandEmpty>
                   <CommandGroup>
                     {products
-                      .filter(product => 
+                      .filter(product =>
                         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                         product.description.toLowerCase().includes(searchTerm.toLowerCase())
                       )
@@ -64,16 +78,35 @@ const Navbar: React.FC = () => {
               </Command>
             </PopoverContent>
           </Popover>
-          <Link href="/cart" passHref>
-            <Button variant="outline" size="icon" className="relative">
-              <ShoppingCart className="h-5 w-5" />
-              {cartItemsCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                  {cartItemsCount}
-                </span>
-              )}
-            </Button>
-          </Link>
+          <div className="flex items-center space-x-4">
+            {loading ? (
+              <div>Chargement...</div>
+            ) : user ? (
+              <div className="flex items-center space-x-2">
+                <span>Bonjour {user.displayName?.split(' ')[0] || 'Utilisateur'}</span>
+                <Button variant="outline" size="sm" onClick={handleSignOut}>
+                  Déconnexion
+                </Button>
+              </div>
+            ) : (
+              <Link href="/sign-in" passHref>
+                <Button variant="outline" size="sm" className="flex items-center">
+                  <UserCircle className="mr-2 h-4 w-4" />
+                  Connexion / Inscription
+                </Button>
+              </Link>
+            )}
+            <Link href="/cart" passHref>
+              <Button variant="outline" size="icon" className="relative">
+                <ShoppingCart className="h-5 w-5" />
+                {cartItemsCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                    {cartItemsCount}
+                  </span>
+                )}
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </nav>
